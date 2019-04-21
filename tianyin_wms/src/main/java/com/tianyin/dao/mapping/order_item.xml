@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="orderItem">
+
+    <resultMap type="com.tianyin.domain.OrderItem" id="orderItem">
+        <result column="order_id"       property="orderId"/>
+        <result column="inventory_id"   property="inventoryId"/>
+        <result column="quantity"       property="quantity"/>
+        <result column="price"          property="price"/>
+    </resultMap>
+    
+    <delete id="deleteItemsByOrderId">
+        delete from `order_item` where `order_id` = #{orderId}
+    </delete>
+    
+    <insert id="addOrderItems">
+        insert into `order_item`
+        (`order_id`, `inventory_id`, `quantity`, `price`)
+        values
+      <foreach collection="items" item="item" separator=",">
+        (#{orderId}, #{item.inventoryId}, #{item.quantity}, #{item.price})
+      </foreach>
+    </insert>
+    
+    <select id="queryItemByOrderIds" resultMap="orderItem">
+        select `order_id`, `inventory_id`, `quantity`, `price`
+        from `order_item`
+        where `order_id` in
+        <foreach collection="orderIds" item="orderId" open="(" close=")" separator=",">
+            #{orderId}
+        </foreach>
+    </select>
+</mapper>

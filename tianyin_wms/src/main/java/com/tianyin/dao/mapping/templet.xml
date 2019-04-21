@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="templet">
+
+    <resultMap type="com.tianyin.domain.Templete" id="templet">
+        <result column="id"    property="id"/>
+        <result column="name"  property="name"/>
+        <result column="price" property="price"/>
+        <result column="stock" property="stock"/>
+    </resultMap>
+    
+    <select id="getTemplet" resultMap="templet">
+        select id, name, price, stock from templet where id = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+         http://www.springframework.org/schema/jdbc 
+         http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+         
+    <context:annotation-config/>
+    <context:component-scan base-package="com.tianyin">
+    </context:component-scan>
+    
+    <!-- 数据库配置 -->
+    <context:property-placeholder location="classpath:db.properties" ignore-unresolvable="true"/>
+    <!--默认的mvc注解映射的支持 -->
+    <!-- <mvc:annotation-driven/> -->
+    
+    <!-- itrip数据源配置 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driverClassName}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="minPoolSize" value="${cpool.minPoolSize}"/>
+        <property name="initialPoolSize" value="${cpool.initialPoolSize}"/>
+        <property name="maxPoolSize" value="${cpool.maxPoolSize}"/>
+        <property name="maxIdleTime" value="${cpool.maxIdleTime}"/>
+        <property name="idleConnectionTestPeriod" value="${cpool.idleConnectionTestPeriod}"/>
+        <property name="testConnectionOnCheckin" value="${cpool.testConnectionOnCheckin}"/>
+        <property name="testConnectionOnCheckout" value="${cpool.testConnectionOnCheckout}"/>
+        <property name="preferredTestQuery" value="${cpool.preferredTestQuery}"/>
+    </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath*:com/tianyin/dao/mapping/*.xml" />
+        <property name="plugins">
+        	<list>
+        		<bean class="com.tianyin.dao.interceptor.PagingInterceptor"/>
+        		<bean class="com.tianyin.dao.interceptor.SqlInterceptor">
+        			<property name="printSql" value="${mybatis.printSql}"/>
+        		</bean>
+        	</list>
+        </property>
+    </bean>
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+      <constructor-arg index="0" ref="sqlSessionFactory" />
+    </bean>
+    
+    <bean id="conversionService"
+        class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="org.springframework.core.convert.support.StringToEnumConverterFactory" />
+            </set>
+        </property>
+    </bean>
+    
+    
+    <!-- 返回对象转json start -->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean id="jsonConvertor"
+                  class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+
+                <property name="features">
+                    <array>
+                        <value>WriteNullStringAsEmpty</value>
+                        <value>QuoteFieldNames</value>
+                        <value>WriteNullListAsEmpty</value>
+                    </array>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <!-- 返回对象转json end -->
+    
+    <import resource="view.xml"/>
+</beans>
