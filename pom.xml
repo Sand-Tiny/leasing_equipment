@@ -6,4 +6,8 @@
   <packaging>pom</packaging>
   <name>leasing_equipment</name>
   <description>leasing_equipment设备</description>
+  
+  <modules>
+  	<module>tianyin_wms</module>
+  </modules>
 </project>
