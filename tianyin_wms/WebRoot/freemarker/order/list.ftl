@@ -160,9 +160,9 @@
                 <div class="input-group">
                   <div class="input-group-addon">状态</div>
                     <select name="status" class="form-control">
-                            <option value=''>-全部-</option>
-                            <option <#if status=1>checked</#if> value="1">未结算</option>
-                            <option <#if status=2>checked</#if> value="2">已结算</option>
+                        <option value=''>-全部-</option>
+                        <option <#if status=1>selected</#if> value="1">未结算</option>
+                        <option <#if status=2>selected</#if> value="2">已结算</option>
                     </select>
                 </div>
               </div>
