@@ -18,8 +18,8 @@ import com.util.cache.model.ICache;
 @Service
 public class InventoryService {
 
-//    private final ICache cache = CacheFactory.getLocalCache(CacheKeyFactory.INVENTORY);
-    private final ICache cache = CacheFactory.getRedisCache(CacheKeyFactory.INVENTORY);
+    private final ICache cache = CacheFactory.getLocalCache(CacheKeyFactory.INVENTORY);
+//    private final ICache cache = CacheFactory.getRedisCache(CacheKeyFactory.INVENTORY);
     
     @Autowired
     private TianyinBaseDao dao;
@@ -34,22 +34,6 @@ public class InventoryService {
         Map<String, Object> entity = new HashMap<String, Object>();
         entity.put("inventories", inventories);
         result = dao.insert("inventory.adds", entity);
-        if (result > Constant.ZERO) {
-            flushCache();
-        }
-        return result;
-    }
-
-    public int add(Inventory inventory) {
-        int result = dao.insert("inventory.add", inventory);
-        if (result > Constant.ZERO) {
-            flushCache();
-        }
-        return result;
-    }
-
-    public int update(Inventory inventory) {
-        int result = dao.update("inventory.update", inventory);
         if (result > Constant.ZERO) {
             flushCache();
         }
@@ -86,6 +70,17 @@ public class InventoryService {
             return result;
         }
         result = dao.delete("inventory.delete", inventoryId);
+        if (result > Constant.ZERO) {
+            flushCache();
+        }
+        return result;
+    }
+
+    public int update(Inventory inventory) {
+        if (inventory == null || inventory.getId() < Constant.ONE) {
+            return Constant.ZERO;
+        }
+        int result = dao.update("inventory.update", inventory);
         if (result > Constant.ZERO) {
             flushCache();
         }

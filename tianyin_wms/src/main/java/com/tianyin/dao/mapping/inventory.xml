@@ -5,43 +5,29 @@
     <resultMap type="com.tianyin.domain.Inventory" id="inventory">
         <result column="id"             property="id"/>
         <result column="name"           property="name"/>
-        <result column="measure_unit"    property="measureUnit"/>
         <result column="stock"          property="stock"/>
         <result column="price"          property="price"/>
     </resultMap>
     
-    <insert id="add" useGeneratedKeys="true" keyProperty="id">
-        insert into `inventory` (`name`, `measure_unit`, `stock`, `price`) 
-        values (#{name}, #{measureUnit}, #{stock}, #{price})
-    </insert>
-    
     <insert id="adds">
-        insert into `inventory` (`name`, `measure_unit`, `stock`, `price`) 
+        insert into `inventory` (`name`, `stock`, `price`) 
         values
         <foreach collection="inventories" item="inventory" separator=","> 
-        (#{inventory.name}, #{inventory.measureUnit}, #{inventory.stock}, #{inventory.price})
+        (#{inventory.name}, #{inventory.stock}, #{inventory.price})
         </foreach>
     </insert>
-    
-    <update id="update">
-        update `inventory`
-        <set>
-            `name`          = #{name},
-            `measure_unit`  = #{measureUnit},
-            `stock`         = #{stock},
-            `price`         = #{price},
-        </set>
-        <where>
-            id = #{id}
-        </where>
-    </update>
-    
+        
     <select id="getAllInventory" resultMap="inventory">
-        select `id`, `name`, `measure_unit`, `stock`, `price`
+        select `id`, `name`, `stock`, `price`
         from `inventory`
     </select>
     
     <delete id="delete">
         delete from `inventory` where `id` = #{inventoryId}
     </delete>
+    
+    <update id="update">
+        update `inventory` set `name`=#{name}, `stock`=#{stock}, `price`=#{price}
+        where `id` = #{id}
+    </update>
 </mapper>

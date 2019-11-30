@@ -2,7 +2,6 @@
 CREATE TABLE `inventory`(  
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `name` VARCHAR(255) COMMENT '设备名称',
-  `measure_unit` VARCHAR(255) COMMENT '计量单位',
   `stock` INT(6) UNSIGNED COMMENT '设备库存',
   `price` DOUBLE(10,2) COMMENT '标准单价',
   PRIMARY KEY (`id`)

@@ -42,5 +42,4 @@
     <mvc:resources mapping="/font/**" location="/dist/font/"/>
     <mvc:resources mapping="/img/**" location="/dist/img/"/>
     <mvc:resources mapping="/style/**" location="/dist/style/"/>
-
 </beans>

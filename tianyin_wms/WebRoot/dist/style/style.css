@@ -949,13 +949,18 @@ header .header-data .hdata em{
 }
 
 .widget .table-bordered th{
-	border-bottom: 1px solid #ddd !important;
+	border-bottom: 1px solid black !important;
+	border-right: 1px solid black !important;
+	border-left: 1px solid black !important;
+	border-top: 1px solid black !important;
 }
 
 .widget .table-bordered td{
 	border-top: 0px !important;
-	border-bottom: 1px solid #ddd !important;
+	border-bottom: 1px solid black !important;
 	border-radius: 0px !important;
+	border-right: 1px solid black !important;
+	border-left: 1px solid black !important;
 }
 
 .widget .table-bordered td:first-child, .widget .table-bordered th:first-child{

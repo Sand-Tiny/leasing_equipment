@@ -87,12 +87,13 @@ public class OrderService {
             return result;
         }
         List<Order> data = dao.queryForList("order.query", whereParams);
-        wrapOrderItem(data);
+        Map<Date, Map<Integer, OrderItem>> dayBookQuantity = orderItemService.getDayBookQuantity(startDate, endDate);
+        wrapOrderItem(data, dayBookQuantity);
         result.setData(data);
         return result;
     }
 
-    private void wrapOrderItem(List<Order> data) {
+    private void wrapOrderItem(List<Order> data, Map<Date, Map<Integer, OrderItem>> dayBookQuantity) {
         if (data == null || data.size() < Constant.ONE) {
             return ;
         }
@@ -105,9 +106,29 @@ public class OrderService {
         for (Order order : data) {
             int orderId = order.getOrderId();
             List<OrderItem> orderItems = items.get(orderId);
+            Date appointDate = order.getAppointDate();
+            wrapBookQuantity(orderItems, dayBookQuantity.get(appointDate));
             double sumMoney = getSumMoney(orderItems);
             order.setSumMoney(sumMoney);
             order.setItems(orderItems);
+        }
+    }
+
+    private void wrapBookQuantity(List<OrderItem> orderItems, Map<Integer, OrderItem> bookQuantity) {
+        if (orderItems == null || bookQuantity == null) {
+            return;
+        }
+        for (OrderItem orderItem : orderItems) {
+            Integer inventoryId = orderItem.getInventoryId();
+            OrderItem bookItem = bookQuantity.get(inventoryId);
+            int totalQuantity = orderItem.getTotalQuantity();
+            if (bookItem == null) {
+                orderItem.setRemanQuantity(totalQuantity);
+                continue;
+            }
+            int bookedQuantity = bookItem.getBookQuantity();
+            orderItem.setBookQuantity(bookedQuantity);
+            orderItem.setRemanQuantity(totalQuantity - bookedQuantity);
         }
     }
 
@@ -134,6 +155,9 @@ public class OrderService {
         summarize.setTotalCount(countDetail.getTotalCount());
         summarize.setPaidCount(countDetail.getPaidCount());
         summarize.setNotpaidCount(countDetail.getNotpaidCount());
+        if (moneyDetail == null) {
+            return summarize;
+        }
         summarize.setTotalMoney(moneyDetail.getTotalMoney());
         summarize.setPaidMoney(moneyDetail.getPaidMoney());
         summarize.setNotpaidMoney(moneyDetail.getNotpaidMoney());

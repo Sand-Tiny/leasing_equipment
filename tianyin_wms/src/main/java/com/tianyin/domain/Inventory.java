@@ -16,12 +16,10 @@ public class Inventory implements Serializable {
     private int id;
     /**设备名称*/
     private String name;
-    /**计量单位*/
-    private String measureUnit;
     /**设备库存*/
-    private int stock;
+    private Integer stock;
     /**标准单价*/
-    private double price;
+    private Double price;
     public int getId() {
         return id;
     }
@@ -34,22 +32,16 @@ public class Inventory implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public String getMeasureUnit() {
-        return measureUnit;
-    }
-    public void setMeasureUnit(String measureUnit) {
-        this.measureUnit = measureUnit;
-    }
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
     public static long getSerialversionuid() {
@@ -57,6 +49,6 @@ public class Inventory implements Serializable {
     }
     @Override
     public String toString() {
-        return "Inventory [id=" + id + ", name=" + name + ", measureUnit=" + measureUnit + ", stock=" + stock + ", price=" + price + "]";
+        return "Inventory [id=" + id + ", name=" + name + ", stock=" + stock + ", price=" + price + "]";
     }
 }

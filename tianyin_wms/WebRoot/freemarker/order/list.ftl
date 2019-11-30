@@ -1,12 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
   <!-- Title and other stuffs -->
-  <title>向右转管理系统</title> 
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
+  <title>订单管理-天音演艺管理系统</title> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="">
   <!-- Stylesheets -->
@@ -34,14 +32,21 @@
   <!-- Widgets stylesheet -->
   <link href="${rc.contextPath}/style/widgets.css" rel="stylesheet">   
     <style>
+	.bg_01{
+	background-color:#ddd;
+	}
+	.bg_02{
+	background-color:rgba(61,169,93,0.5);
+	}
   .out{
-    border-bottom: 1px solid #ddd;
+    <!--border-bottom: 10px solid #000079;-->
   }
     #tebles{
-    border-top:1px solid #ddd
+    border:1px solid black;
     }
     #tebles th,#tebles td{
-    text-align:center
+    text-align:center;
+	border-color:1px solid black;
     }
     .butt{
         fon-siz16px;
@@ -66,6 +71,14 @@
    width:50%;
    display: inline-block;
    }
+   .out table th:nth-child(even), out table td:nth-child(even){
+    <#if role='admin'>width:20%</#if>
+    <#if role!='admin'>width:30%</#if>
+   }
+   .out table th:nth-child(odd), out table td:nth-child(odd){
+   <#if role='admin'>width:20%</#if>
+    <#if role!='admin'>width:30%</#if>
+   }
   </style>
   <!-- HTML5 Support for IE -->
   <!--[if lt IE 9]>
@@ -86,27 +99,20 @@
         <div class="col-md-4">
           <!-- Logo. -->
           <div class="logo">
-            <h1><a href="${rc.contextPath}/#">向右转风控系统<span class="bold"></span></a></h1>
-            <!-- <p class="meta">后台管理系统</p> -->
+            <h1><a href="${rc.contextPath}/">天音演艺<span class="bold"></span></a></h1>
           </div>
           <!-- Logo ends -->
         </div>
 
         <!-- Button section -->
         <div class="col-md-4 text-center ">
+        <#if role='admin'>
          <div class="col-md-10 fon-siz">
-             <a href="${rc.contextPath}/#" class="btn btn-primary btn-lg " role="button">风控审核</a>
-             <a href="${rc.contextPath}/#" class="btn btn-primary btn-lg " role="button">风控配置</a>
+             <a href="${rc.contextPath}/inventory/all" class="btn btn-primary btn-lg " role="button">设备管理</a>
+             <a href="${rc.contextPath}/order/query" class="btn btn-primary btn-lg " role="button">订单管理</a>
          </div>
+        </#if>
         </div>
-
-        <!-- Data section -->
-
-        <div class="col-md-4 text-right fon-siz padding">
-            <span href="${rc.contextPath}/#" class=" " role="button">李婷</span>
-             <a href="${rc.contextPath}/#" class="" role="button">退出</a>
-        </div>
-
       </div>
     </div>
   </header>
@@ -121,12 +127,7 @@
       <div class="page-head">
           <div class="bread-crumb">
             当前位置：
-            <a href="${rc.contextPath}/index.html">系统</a> 
-            <!-- Divider -->
-            <span class="divider">/</span> 
-            <a href="${rc.contextPath}/#" class="bread-current">借款标审核</a>
-            <span class="divider">/</span>
-            <a href="${rc.contextPath}/#" class="bread-current">未完成</a>
+            <a href="#">订单管理</a> 
           </div>
           <div class="clearfix"></div>
         </div>
@@ -139,13 +140,13 @@
           <div class="form-group">
             <div class="input-group form_datetime">
               <div class="input-group-addon">开始日期</div>
-              <input class="form-control" name="startDate" <#if startDate??>value="${startDate?string("yyyy-MM-dd")}"</#if> type="date" placeholder="开始日期">
+              <input class="form-control" name="startDate" onClick="WdatePicker()" <#if startDate??>value="${startDate?string("yyyy-MM-dd")}"</#if> readonly type="text" placeholder="开始日期">
             </div>
           </div>
           <div class="form-group">
             <div class="input-group form_datetime">
               <div class="input-group-addon">结束日期</div>
-              <input class="form-control" name="endDate" <#if endDate??>value="${endDate?string("yyyy-MM-dd")}"</#if> disabled="disabled" type="date" placeholder="结束日期">
+              <input class="form-control" name="endDate" onClick="WdatePicker()" <#if endDate??>value="${endDate?string("yyyy-MM-dd")}"</#if> readonly type="text" placeholder="结束日期">
             </div>
           </div>
             <div class="form-group">
@@ -154,165 +155,113 @@
               <input class="form-control" name="consumerName" value="${consumerName}" type="text" placeholder="客户名称">
             </div>
           </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-addon">状态</div>
-                <select name="status" class="form-control">
-                        <option value=''>-全部-</option>
-                        <option <#if status=1>checked</#if> value="1">未结算</option>
-                        <option <#if status=2>checked</#if> value="2">已结算</option>
-                </select>
-            </div>
-          </div>
+          <#if role='admin'>
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-addon">状态</div>
+                    <select name="status" class="form-control">
+                            <option value=''>-全部-</option>
+                            <option <#if status=1>checked</#if> value="1">未结算</option>
+                            <option <#if status=2>checked</#if> value="2">已结算</option>
+                    </select>
+                </div>
+              </div>
+          </#if>
       <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">新增</button>
+    <#if role='admin'>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">新增</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </#if>
+      <button type="button" class="btn btn-primary" onClick="javascript:print();">打印</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button type="button" class="btn btn-primary" onClick="javascript:exportExcel();">导出Excel</button>
     </form>
       </div>
       </div>
-      <div class="widget">
+      <div class="widget" style="width: 1110px;">
+	  
       <#list orders.data as order>
-             <div class="out">
-                <div class="text-center ta_title" >
-                    <span>ID：${order.orderId!''}</span>&nbsp;&nbsp;
+             <div class="out <#if order_index%2=0>bg_01<#else>bg_02</#if>" <#if order.status=2>style="color:red"</#if>>
+                <div class="text-left ta_title" >
+                    <span class="order_id">ID：${order.orderId!''}</span>&nbsp;&nbsp;
                     <span>时间：<#if (order.appointDate)??>${order.appointDate?string("yyyy-MM-dd")}</#if></span>&nbsp;&nbsp;
                     <span>地点：${order.appointAddress!''}</span>&nbsp;&nbsp;
                     <span>客户：${order.consumerName!''}</span>&nbsp;&nbsp;
                     <span>电话：${order.consumerPhone!''}</span>&nbsp;&nbsp;
+                    <#if role='admin'>
                     <span>合计：${order.sumMoney?string(',###.00')}</span>&nbsp;&nbsp;
                     <span>状态：
-                        <#if order.status=1>未结算
-                        <#elseif order.status=2>已结算
-                        <#elseif order.status=4>已删除
-                        <#else>
-                        </#if>
+                        <span class="status">
+                            <#if order.status=1>未结算
+                            <#elseif order.status=2>已结算
+                            <#elseif order.status=4>已删除
+                            <#else>
+                            </#if>
+                        </span>
                     </span>&nbsp;&nbsp; 
                     <#if order.status=1>
-                        <a class="btn btn-default" href="${rc.contextPath}/order/updateStatus?orderId=${order.orderId!0}&status=2">结算</a>
-                        <a class="btn btn-default" href="${rc.contextPath}/order/updateStatus?orderId=${order.orderId!0}&status=4">删除</a>
+                        <a class="btn btn-default" onClick="updateStatus(this, ${order.orderId!0}, 2)">结算</a>
+                        <a class="btn btn-default"  onClick="delcfm(this, '${rc.contextPath}/order/updateStatus?orderId=${order.orderId!0}&status=4')">删除</a>
                     <#elseif order.status=2>
-                        <a class="btn btn-default" href="${rc.contextPath}/order/updateStatus?orderId=${order.orderId!0}&status=1">未结算</a>
+                        <a class="btn btn-default" onClick="updateStatus(this, ${order.orderId!0}, 1)">未结算</a>
+                        <a class="btn btn-default" style="display:none" onClick="delcfm(this, '${rc.contextPath}/order/updateStatus?orderId=${order.orderId!0}&status=4')">删除</a>
                     <#else>
+                    </#if>
+                    <a class="btn btn-default" onClick="addItem(this, ${order.orderId!0})">添加</a>
                     </#if>
                 </div>
                 <table class="table table-bordered" style="" id="tebles">
                 <thead>
                     <tr>
                         <th >名称</th>
+                      <#if role='admin'>
                         <th >价格</th>
+                      </#if>
                         <th >数量</th>
+                        <th >当日剩余数量</th>
+                      <#if role='admin'>
                         <th >小计</th>
+                      </#if>
+                      <#if role='admin'>
+                        <th >操作</th>
+                      </#if>
                     </tr>
                     </thead>
                     <tbody>
                     <#list order.items as item>
                     <tr>
-                        <td>${item.inventory.name!'--'}</td>
-                        <td>${item.price?string(',###.00')}</td>
-                        <td>${item.quantity?string(',###')}</td>
-                        <td>${item.subtotal?string(',###.00')}</td>
+                        <td>${item.inventoryName!'--'}</td>
+                      <#if role='admin'>
+                        <td><dd class="price" ondblclick="ShowElement(this, ${order.orderId!0}, ${item.inventoryId!'0'})">${item.price?string(',##0.00')}</dd></td>
+                      </#if>
+                        <td><dd class="quantity" ondblclick="ShowElement(this, ${order.orderId!0}, ${item.inventoryId!'0'})">${item.quantity?string(',##0')}</dd></td>
+                        <td>${item.remanQuantity?string(',##0')}</td>
+                      <#if role='admin'>
+                        <td>${item.subtotal?string(',##0.00')}</td>
+                      </#if>
+                      <#if role='admin'>
+                        <td>
+                            <a class="btn btn-default" onClick="delItem(${item.orderId!0}, ${item.inventoryId!0})">删除</a>
+                        </td>
+                      </#if>
                     </tr>
                     </#list>
                     </tbody>
                 </table>
                 </div>
          </#list>
-                <div class="out">
-                    <div class="text-center ta_title" >
-                        <span>时间：2015-09-01</span>&nbsp;&nbsp;
-                    <span>地点：新希望国际</span>&nbsp;&nbsp;
-                    <span>客户：小波</span>&nbsp;&nbsp;
-                    <span>电话：138 8888 8888</span>&nbsp;&nbsp;
-                    <span>状态：已付款</span>
-                    </div>
-                    <table class="table table-bordered" style="" id="tebles">
-                    <thead>
-                        <tr>
-                            <th >名称</th>
-                            <th >数量</th>
-                            <th >价格</th>
-                            <th >小计</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>高并发编程</td>
-                            <td style="text-align:center">1</td>
-                            <td>99.9</td>
-                            <td>99.9</td>
-                        </tr>
-                        <tr>
-                            <td>设计模式</td>
-                            <td>2</td>
-                            <td>69</td>
-                            <td>138</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <p class="text-right butt" >
-                        <span>合计：237.9</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="button" class="btn btn-default" value="结算"/>&nbsp;&nbsp;
-                        <input type="button" class="btn btn-default" value="删除"/>
-                    </p>
-                </div>
-                
-                 <div class="out">
-                        <div class="text-center ta_title" >
-                            <span>时间：2015-09-01</span>&nbsp;&nbsp;
-                            <span>地点：新希望国际</span>&nbsp;&nbsp;
-                            <span>客户：小波</span>&nbsp;&nbsp;
-                            <span>电话：138 8888 8888</span>&nbsp;&nbsp;
-                            <span>状态：已付款</span>
-                        </div>
-                        <table class="table table-bordered" style="" id="tebles">
-                        <thead>
-                            <tr>
-                                <th >名称</th>
-                                <th >数量</th>
-                                <th >价格</th>
-                                <th >小计</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>高并发编程</td>
-                                <td style="text-align:center">1</td>
-                                <td>99.9</td>
-                                <td>99.9</td>
-                            </tr>
-                            <tr>
-                                <td>设计模式</td>
-                                <td>2</td>
-                                <td>69</td>
-                                <td>138</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <p class="text-right butt" >
-                        <span>合计：237.9</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="button" class="btn btn-default" value="结算"/>&nbsp;&nbsp;
-                        <input type="button" class="btn btn-default" value="删除"/>
-                        </p>
-                </div>
-                
-              <p class="text-right butt" >
-              <span>总条数：${summarize.totalCount?string(',###')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>结算条数：${summarize.paidCount?string(',###')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>未结算条数：${summarize.notpaidCount?string(',###')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>总金额：${summarize.totalMoney?string(',###.00')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>结算金额：${summarize.paidMoney?string(',###.00')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>未结算金额：${summarize.notpaidMoney?string(',###.00')}</span>
-              </p>
-              <div class="widget-foot">
-                  <ul class="pagination pull-right">
-                    <li><a href="${rc.contextPath}/#">上一页</a></li>
-                    <li><a href="${rc.contextPath}/#">1</a></li>
-                    <li><a href="${rc.contextPath}/#">2</a></li>
-                    <li><a href="${rc.contextPath}/#">3</a></li>
-                    <li><a href="${rc.contextPath}/#">4</a></li>
-                    <li><a href="${rc.contextPath}/#">下一页</a></li>
-                  </ul>
-                  <div class="clearfix"></div> 
-              </div>
+          <p class="text-right butt" style="padding-right: 40px;">
+          <span>总条数：${summarize.totalCount?string(',##0')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+          <#if role='admin'>
+            <span>结算条数：${summarize.paidCount?string(',##0')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>未结算条数：${summarize.notpaidCount?string(',##0')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>总金额：${summarize.totalMoney?string(',##0.00')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>结算金额：${summarize.paidMoney?string(',##0.00')}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>未结算金额：${summarize.notpaidMoney?string(',##0.00')}</span>
+          </#if>
+          </p>
+          <div class="widget-foot">
+              ${pg(orders.total, page, pageSize)}
+              <div class="clearfix"></div> 
+          </div>
       </div>
     </div>
  </div>
@@ -324,17 +273,17 @@
       <div class="out" id="out">
       <form action="${rc.contextPath}/order/save" method="post">
         <div class="text-center model_top" >
-            <input type="hidden" name="status" value="1"/>
+           <input type="hidden" name="status" value="1"/>
           <div class="form-group">
             <div class="input-group">
               <div class="input-group-addon">时间</div>
-              <input class="form-control" name="appointDate" required type="text" placeholder="时间">
+              <input class="form-control" onClick="WdatePicker()" name="appointDate" required type="date" readonly placeholder="时间">
             </div>
           </div>
            <div class="form-group">
             <div class="input-group">
               <div class="input-group-addon">地点</div>
-              <input class="form-control" name="appointAddress" required type="text" placeholder="地点">
+              <input class="form-control" name="appointAddress" type="text" placeholder="地点">
             </div>
           </div>
            <div class="form-group">
@@ -346,11 +295,11 @@
            <div class="form-group">
             <div class="input-group">
               <div class="input-group-addon">电话</div>
-              <input class="form-control" name="consumerPhone" required type="text" placeholder="电话">
+              <input class="form-control" name="consumerPhone" type="text" placeholder="电话">
             </div>
           </div>
         </div>
-        <table class="table table-bordered" style="" id="tebles">
+        <table class="table table-bordered" id="tebles">
         <thead>
             <tr>
                 <th >名称</th>
@@ -358,19 +307,20 @@
                 <th >数量</th>
             </tr>
             </thead>
-            <tbody>
-            <#list inventorys as t>
-            <tr>
-                <td><select class="form-control widts" name="items[${t_index}].inventoryId">
+            <tbody id="add_item">
+            <tr id="clone_1" class='item-row'>
+                <td><select class="form-control widts" name="items[0].inventoryId">
                         <option value="0">--请选择--</option>
                     <#list inventorys as inventory>
-                        <option value="${inventory.id}" price=${inventory.price}>${inventory.name}</option>
+                        <option value="${inventory.id}" price=${inventory.price} inventoryName=${inventory.name}>${inventory.name}</option>
                     </#list>
                 </select></td>
-                <td><input class="form-control widts" name="items[${t_index}].price" type="text" value="0"/></td>
-                <td><input  class="form-control widts" name="items[${t_index}].quantity" type="text" value="0"/></td>
+                <td><input required class="form-control widts" name="items[0].price" type="number" placeholder="价格"/></td>
+                <input name="items[0].inventoryName" type="hidden"/>
+                <td><input required class="form-control widts" name="items[0].quantity" type="number" placeholder="数量"/>
+				<button type="button" class="btnAdd001 btn-primary" style="margin:0 10px" data-toggle="modal" data-target="#modal">+</button>
+				</td>
             </tr>
-            </#list>
             </tbody>
         </table>
         <p class="text-right butt" >
@@ -390,20 +340,281 @@
       </div>
     </div>
   </div>
-</footer>   
+</footer>
+
+<!-- 信息删除确认 -->  
+<div class="modal fade" id="delcfmModel">  
+  <div class="modal-dialog">  
+    <div class="modal-content message_align">  
+      <div class="modal-header">  
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>  
+        <h4 class="modal-title">提示信息</h4>  
+      </div>  
+      <div class="modal-body">  
+        <p>您确认要删除吗？</p>  
+      </div>  
+      <div class="modal-footer">  
+         <input type="hidden" id="url"/>  
+         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+         <a  onclick="urlSubmit()" class="btn btn-success" data-dismiss="modal">确定</a>  
+      </div>  
+    </div><!-- /.modal-content -->  
+  </div><!-- /.modal-dialog -->  
+</div><!-- /.modal -->
+
+<!-- item添加对话框 -->  
+<div class="modal fade" id="addItemModel">  
+  <div class="modal-dialog">  
+    <div class="modal-content message_align">  
+      <div class="modal-header">  
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>  
+        <h4 class="modal-title">添加条目</h4>  
+      </div>  
+      <div class="modal-body">
+      <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th >名称</th>
+                <th >价格</th>
+                <th >数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='item-row'>
+                <td style="width:260px;"><select id="itemSelect" class="form-control widts">
+                    <option value="0">--请选择--</option>
+                    <#list inventorys as inventory>
+                        <option value="${inventory.id}" price=${inventory.price} inventoryName=${inventory.name}>${inventory.name}</option>
+                    </#list>
+                </select></td>
+                <td><input id="addPrice" required class="form-control widts" type="number" placeholder="价格"/></td>
+                <td><input id="addQuantity" required class="form-control widts" type="number" placeholder="数量"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+      </div>  
+      <div class="modal-footer">  
+         <input type="hidden" id="url"/>  
+         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+         <a  onclick="doAddItem()" class="btn btn-success">添加</a>  
+      </div>  
+    </div><!-- /.modal-content -->  
+  </div><!-- /.modal-dialog -->  
+</div><!-- /.modal -->
+    
 <script src="${rc.contextPath}/js/jquery.js"></script> <!-- jQuery -->
 <script src="${rc.contextPath}/js/bootstrap.js"></script> <!-- Bootstrap -->
 <script src="${rc.contextPath}/js/jquery-ui-1.9.2.custom.min.js"></script> <!-- jQuery UI -->
 <script src="${rc.contextPath}/js/custom.js"></script> <!-- Custom codes -->
 <script src="${rc.contextPath}/js/bootstrap-datetimepicker.min.js"></script> <!-- Custom codes -->
 <script src="${rc.contextPath}/js/bootstrap-datetimepicker.js"></script> <!-- Custom codes -->
-            
+<script src="${rc.contextPath}/js/WdatePicker.js"></script> <!-- Custom codes -->
+<script src="${rc.contextPath}/js/jquery.jqprint/jquery.jqprint-0.3.js"></script> <!-- Custom codes -->
+<script src="${rc.contextPath}/js/jquery.jqprint/jquery-migrate-1.1.0.js"></script> <!-- Custom codes -->
 <script>
-$('option').click(function(){
-  var price = $(this).attr('price');
-  var pricenode = $(this).parents('tr').find('input:first');
-  pricenode.val(price);
+
+var $curnode;
+var optOrderId;
+
+$(function(){
+var index = 1;
+$('#add_item').delegate('.btnAdd001','click',function(){
+var _tr=$('#clone_1').clone().removeAttr('id');
+var _new_tr = $(_tr).find('button').removeClass('btnAdd001').addClass('btnDel002').html('-').parent().parent();
+$(this).parent().parent().parent().append(_new_tr);
+refreshItemIndex();
+}).delegate('.btnDel002','click',function(){
+$(this).parent().parent().remove();
+refreshItemIndex();
+})
+function refreshItemIndex(){
+        $(".item-row").each(function(index){
+        $(this).find("[name$='inventoryId']").attr("name", "items[" + index + "].inventoryId");
+        $(this).find("[name$='inventoryName']").attr("name", "items[" + index + "].inventoryName");
+        $(this).find("[name$='price']").attr("name", "items[" + index + "].price");
+        $(this).find("[name$='quantity']").attr("name", "items[" + index + "].quantity");
+    });
+    $('select').unbind("change");
+    $('select').bind("change", function(){
+        var price = $(this).find('option:selected').attr('price');
+        var pricenode = $(this).parents('tr').find('input:first');
+        pricenode.val(price);
+        var name = $(this).find('option:selected').attr('inventoryName');
+        var namenode = $(this).parents('tr').find("[name$='inventoryName']");
+        namenode.attr("value", name);
+    });
+}
+$('select').change(function(){
+      var price = $(this).find('option:selected').attr('price');
+      var pricenode = $(this).parents('tr').find('input:first');
+      pricenode.val(price);
+      var name = $(this).find('option:selected').attr('inventoryName');
+      var namenode = $(this).parents('tr').find("[name$='inventoryName']");
+      namenode.attr("value", name);
 });
+})
+function changePage(page){
+    var search = location.search;
+    if (search.indexOf("page=") != -1) {
+        location.href=location.pathname + search.replace(/page=\d+/g,'page=' + page);
+    } else {
+        if (search.indexOf("?") != -1) {
+            location.href = location.pathname + search + "&page=" + page;
+        } else {
+            location.href = location.pathname + search + "?page=" + page;
+        }
+    }
+}
+function turnPage() {
+    var page = $(".stage_page_in").val();
+    if (undefined != page && 0 < page.length && /^\d+$/.test(page.trim())) {
+        page = page.replace(/\D/g,'');
+        changePage(page)
+    } else
+        alert("请输入正确的页码");
+}
+
+function delcfm(element, url) {  
+    $curnode = $(element);
+    $('#url').val(url);//给会话中的隐藏属性URL赋值  
+    $('#delcfmModel').modal();  
+}  
+function urlSubmit(){  
+    var url=$.trim($("#url").val());//获取会话中的隐藏属性URL  
+    $.get(url);
+    var statusEle = $curnode.parent().find(".status");
+    $(statusEle).text('已删除');
+    $curnode.hide();
+    $curnode.prev().hide();
+}  
+function print(){
+var content = $('.widget');
+$(content).find('.order_id').remove();
+    $(content).jqprint();
+}
+
+function exportExcel(){
+    var url = '${rc.contextPath}/order/export?startDate=' + $("[name='startDate']").val() + 
+    '&endDate=' + $("[name='endDate']").val() + '&consumerName=' + $("[name='consumerName']").val() + 
+    '&status=' + $("[name='status']").val();
+    window.open(url);
+}
+
+function addItem(element, orderId) {
+    console.log('addItem: ', element, orderId);
+    optOrderId = orderId;
+    $('#addItemModel').modal();
+}
+
+function doAddItem(){
+    var $select = $('#itemSelect');
+    var inventoryId = $select.find("option:selected").val();
+    var inventoryName = $select.find("option:selected").text();
+    var price = $('#addPrice').val();
+    var quantity = $('#addQuantity').val();
+    var param = {
+        orderId: optOrderId,
+        inventoryId: inventoryId,
+        inventoryName: inventoryName,
+        price: price,
+        quantity: quantity
+    }
+    $.post("${rc.contextPath}/order/addItem", param, function(res){
+        if(res > 0){
+            alert('添加成功！');
+            location.reload();
+        }else{
+            alert('添加失败！');
+        }
+    });
+}
+
+function delItem(orderId, inventoryId){
+    console.log('delItem: ', orderId, inventoryId);
+    var status = confirm("确定要删除吗？");
+    if(!status){
+        return;
+    }
+    $.post("${rc.contextPath}/order/deleteItem", { orderId: orderId, inventoryId: inventoryId},function(res){
+        console.log(res);
+        if(res > 0){
+            alert('删除成功！');
+            location.reload();
+        }else{
+            alert('删除失败！');
+        }
+    });
+}
+
+function updateStatus(element, orderId, status) {
+    $.post("${rc.contextPath}/order/updateStatus", { orderId: orderId, status: status} );
+    var statusEle = $(element).parent().find(".status");
+    //alert(statusEle);
+    if (status == 1) {
+        console.info(statusEle);
+        //statusEle.innerHTML = '未结算';
+        $(statusEle).text('未结算');
+        var $ahref = $(element);
+        $ahref.text("已结算");
+        $ahref.next().show();
+        $ahref.attr('onClick', 'updateStatus(this, ' + orderId + ', 2)');
+    }
+    if (status == 2) {
+        console.info(statusEle);
+        //statusEle.innerHTML = '已结算';
+        $(statusEle).text('已结算');
+        var $ahref = $(element);
+        $ahref.text("未结算");
+        $ahref.next().hide();
+        $ahref.attr('onClick', 'updateStatus(this, ' + orderId + ', 1)');
+    }
+    if (status == 4) {
+        console.info(statusEle);
+        //statusEle.innerHTML = '已删除';
+        $(statusEle).text('已删除');
+    }
+    return;
+}
+
+function ShowElement(element, orderId, inventoryId) {
+    var oldhtml = element.innerHTML;
+    //创建新的input元素
+    var newobj = document.createElement('input');
+    //为新增元素添加类型
+    newobj.type = 'text';
+    //为新增元素添加value值
+    newobj.value = oldhtml;
+    //为新增元素添加光标离开事件
+    newobj.onblur = function() {
+        var changed = false;
+        if (this.value != oldhtml && this.value != '') {
+            if (/\d+/.test(this.value)) {
+                changed = true;
+            }
+        }
+        if (changed) {
+            element.innerHTML = this.value;
+            
+            
+            var $tr = $(element).parent().parent();
+            var price = $tr.find(".price").text();
+            var quantity = $tr.find(".quantity").text();
+            $.post("${rc.contextPath}/order/updateItem", { orderId: orderId, inventoryId: inventoryId, price : price, quantity : quantity} );
+            return;
+        }
+        element.innerHTML = oldhtml;
+        //当触发时判断新增元素值是否为空，为空则不修改，并返回原有值 
+    }
+    //设置该标签的子节点为空
+    element.innerHTML = '';
+    //添加该标签的子节点，input对象
+    element.appendChild(newobj);
+    //设置选择文本的内容或设置光标位置（两个参数：start,end；start为开始位置，end为结束位置；如果开始位置和结束位置相同则就是光标位置）
+    newobj.setSelectionRange(0, oldhtml.length);
+    //设置获得光标
+    newobj.focus();
+}
 </script>
 </body>
 </html>
