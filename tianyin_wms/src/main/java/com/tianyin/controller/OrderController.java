@@ -153,12 +153,14 @@ public class OrderController {
             HSSFRow row = sheet.createRow(i);
             HSSFCell cell = row.createCell(0);
             cell.setCellValue(order.getConsumerName()+"("+ dataFormat.format(order.getAppointDate()) + ")");
+            cell = row.createCell(1);
+            cell.setCellValue(order.getSumMoney());
             List<OrderItem> items = order.getItems();
             if (items == null || items.isEmpty()) {
                 continue;
             }
-            for (int index = 1; index < items.size() + 1; index ++) {
-                OrderItem item = items.get(index - 1);
+            for (int index = 2; index < items.size() + 2; index ++) {
+                OrderItem item = items.get(index - 2);
                 cell = row.createCell(index);
                 cell.setCellValue(item.getInventoryName() + "(" + item.getQuantity() + ")");
             }
