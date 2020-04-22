@@ -147,20 +147,35 @@ public class OrderController {
             hw.close();
             return;
         }
+        HSSFRow row = sheet.createRow(0);
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("客户");
+        cell = row.createCell(1);
+        cell.setCellValue("日期");
+        cell = row.createCell(2);
+        cell.setCellValue("金额");
+        cell = row.createCell(3);
+        cell.setCellValue("地址");
+        cell = row.createCell(4);
+        cell.setCellValue("设备");
         DateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd");
-        for (int i = 0; i < data.size(); i ++) {
-            Order order = data.get(i);
-            HSSFRow row = sheet.createRow(i);
-            HSSFCell cell = row.createCell(0);
-            cell.setCellValue(order.getConsumerName()+"("+ dataFormat.format(order.getAppointDate()) + ")");
+        for (int i = 1; i < data.size() + 1; i ++) {
+            Order order = data.get(i - 1);
+             row = sheet.createRow(i);
+             cell = row.createCell(0);
+            cell.setCellValue(order.getConsumerName());
             cell = row.createCell(1);
+            cell.setCellValue(dataFormat.format(order.getAppointDate()));
+            cell = row.createCell(2);
             cell.setCellValue(order.getSumMoney());
+            cell = row.createCell(3);
+            cell.setCellValue(order.getAppointAddress());
             List<OrderItem> items = order.getItems();
             if (items == null || items.isEmpty()) {
                 continue;
             }
-            for (int index = 2; index < items.size() + 2; index ++) {
-                OrderItem item = items.get(index - 2);
+            for (int index = 4; index < items.size() + 4; index ++) {
+                OrderItem item = items.get(index - 4);
                 cell = row.createCell(index);
                 cell.setCellValue(item.getInventoryName() + "(" + item.getQuantity() + ")");
             }
